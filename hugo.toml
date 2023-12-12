@@ -1,0 +1,14 @@
+title = 'Paper'
+theme = "paper"
+languageCode = 'zh-cn'
+baseURL = 'https://sricor.github.io/'
+
+[params]
+color = 'linen'
+github = 'Sricor' 
+twitter = 'josricor'
+
+math = true
+comments = false
+monoDarkIcon = true 
+disablePostNavigation = true
