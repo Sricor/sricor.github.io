@@ -1,0 +1,290 @@
+<!doctype html><html class="not-ready lg:text-base" style=--bg:#faf8f1 lang=zh-cn><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><title>Rust Fearless Concurrency - Paper</title>
+<meta name=theme-color><meta name=description content="Call the std::thread::spawn function and pass it a closure to Create a new thread. All spawned threads are shut down, when the main thread completes. Call the join method on it, will wait for its thread to finish. std::mpsc::channel function returns a tuple, the first element of which is the transmitter and the second element is the receiver. Transmitter send method takes ownership of its parameter. Receiver recv method will block the main thread’s execution and wait until a value is sent down the channel."><meta name=author content="Sricor"><link rel="preload stylesheet" as=style href=https://sricor.github.io/main.min.css><link rel=preload as=image href=https://sricor.github.io/theme.svg><link rel=preload as=image href=https://sricor.github.io/twitter.svg><link rel=preload as=image href=https://sricor.github.io/github.svg><script defer src=https://sricor.github.io/highlight.min.js onload=hljs.initHighlightingOnLoad()></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.16.7/dist/katex.min.css integrity=sha384-3UiQGuEI4TTMaFmGIZumfRPtfKQ3trwQE2JgosJxCnGmQpL/lJdjpcHkaaFwHlcI crossorigin=anonymous><script defer src=https://cdn.jsdelivr.net/npm/katex@0.16.7/dist/katex.min.js integrity=sha384-G0zcxDFp5LWZtDuRMnBkk3EphCK1lhEf4UEyEM693ka574TZGwo4IWwS6QLzM/2t crossorigin=anonymous></script><script defer src=https://cdn.jsdelivr.net/npm/katex@0.16.7/dist/contrib/auto-render.min.js integrity=sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05 crossorigin=anonymous></script><script>document.addEventListener("DOMContentLoaded",()=>renderMathInElement(document.body,{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1}],throwOnError:!1}))</script><link rel=icon href=https://sricor.github.io/favicon.ico><link rel=apple-touch-icon href=https://sricor.github.io/apple-touch-icon.png><meta name=generator content="Hugo 0.121.1"><meta itemprop=name content="Rust Fearless Concurrency"><meta itemprop=description content="Call the std::thread::spawn function and pass it a closure to Create a new thread. All spawned threads are shut down, when the main thread completes. Call the join method on it, will wait for its thread to finish. std::mpsc::channel function returns a tuple, the first element of which is the transmitter and the second element is the receiver. Transmitter send method takes ownership of its parameter. Receiver recv method will block the main thread’s execution and wait until a value is sent down the channel."><meta itemprop=datePublished content="2023-12-13T00:00:00+00:00"><meta itemprop=dateModified content="2023-12-13T00:00:00+00:00"><meta itemprop=wordCount content="1774"><meta itemprop=keywords content="Rust,Programming,"><meta property="og:title" content="Rust Fearless Concurrency"><meta property="og:description" content="Call the std::thread::spawn function and pass it a closure to Create a new thread. All spawned threads are shut down, when the main thread completes. Call the join method on it, will wait for its thread to finish. std::mpsc::channel function returns a tuple, the first element of which is the transmitter and the second element is the receiver. Transmitter send method takes ownership of its parameter. Receiver recv method will block the main thread’s execution and wait until a value is sent down the channel."><meta property="og:type" content="article"><meta property="og:url" content="https://sricor.github.io/posts/public/rust/fearless-concurrency/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2023-12-13T00:00:00+00:00"><meta property="article:modified_time" content="2023-12-13T00:00:00+00:00"><meta name=twitter:card content="summary"><meta name=twitter:title content="Rust Fearless Concurrency"><meta name=twitter:description content="Call the std::thread::spawn function and pass it a closure to Create a new thread. All spawned threads are shut down, when the main thread completes. Call the join method on it, will wait for its thread to finish. std::mpsc::channel function returns a tuple, the first element of which is the transmitter and the second element is the receiver. Transmitter send method takes ownership of its parameter. Receiver recv method will block the main thread’s execution and wait until a value is sent down the channel."><link rel=canonical href=https://sricor.github.io/posts/public/rust/fearless-concurrency/></head><body class="text-black duration-200 ease-out dark:text-white"><header class="mx-auto flex h-[4.5rem] max-w-3xl px-8 lg:justify-center"><div class="relative z-50 mr-auto flex items-center"><a class="-translate-x-[1px] -translate-y-[1px] text-2xl font-semibold" href=https://sricor.github.io/>Paper</a><div class="btn-dark text-[0] ml-4 h-6 w-6 shrink-0 cursor-pointer [background:url(./theme.svg)_left_center/cover_no-repeat] dark:invert dark:[background-position:right]" role=button aria-label=Dark></div></div><div class="btn-menu relative z-50 -mr-8 flex h-[4.5rem] w-[5rem] shrink-0 cursor-pointer flex-col items-center justify-center gap-2.5 lg:hidden" role=button aria-label=Menu></div><script>const htmlClass=document.documentElement.classList;setTimeout(()=>{htmlClass.remove("not-ready")},10);const btnMenu=document.querySelector(".btn-menu");btnMenu.addEventListener("click",()=>{htmlClass.toggle("open")});const metaTheme=document.querySelector('meta[name="theme-color"]'),lightBg="#faf8f1".replace(/"/g,""),setDark=e=>{metaTheme.setAttribute("content",e?"#000":lightBg),htmlClass[e?"add":"remove"]("dark"),localStorage.setItem("dark",e)},darkScheme=window.matchMedia("(prefers-color-scheme: dark)");if(htmlClass.contains("dark"))setDark(!0);else{const e=localStorage.getItem("dark");setDark(e?e==="true":darkScheme.matches)}darkScheme.addEventListener("change",e=>{setDark(e.matches)});const btnDark=document.querySelector(".btn-dark");btnDark.addEventListener("click",()=>{setDark(localStorage.getItem("dark")!=="true")})</script><div class="nav-wrapper fixed inset-x-0 top-full z-40 flex h-full select-none flex-col justify-center pb-16 duration-200 dark:bg-black lg:static lg:h-auto lg:flex-row lg:!bg-transparent lg:pb-0 lg:transition-none"><nav class="mt-12 flex justify-center space-x-10 dark:invert lg:ml-12 lg:mt-0 lg:items-center lg:space-x-6"><a class="h-8 w-8 text-[0] [background:var(--url)_center_center/cover_no-repeat] lg:h-6 lg:w-6" style=--url:url(./twitter.svg) href=https://twitter.com/josricor target=_blank rel=me>twitter
+</a><a class="h-8 w-8 text-[0] [background:var(--url)_center_center/cover_no-repeat] lg:h-6 lg:w-6" style=--url:url(./github.svg) href=https://github.com/Sricor target=_blank rel=me>github</a></nav></div></header><main class="prose prose-neutral relative mx-auto min-h-[calc(100%-9rem)] max-w-3xl px-8 pb-16 pt-12 dark:prose-invert"><article><header class=mb-16><h1 class="!my-0 pb-2.5">Rust Fearless Concurrency</h1><div class="text-sm antialiased opacity-60"><time>Dec 13, 2023</time>
+<span class=mx-1>&#183;</span>
+<span>Sricor</span></div></header><section><blockquote><ul><li>Call the <code>std::thread::spawn</code> function and pass it a closure to Create a new thread.</li><li>All spawned threads are shut down, when the main thread completes.</li><li>Call the <code>join</code> method on it, will wait for its thread to finish.</li></ul></blockquote><blockquote><ul><li><code>std::mpsc::channel</code> function returns a tuple, the first element of which is the transmitter and the second element is the receiver.</li><li>Transmitter <code>send</code> method takes ownership of its parameter.</li><li>Receiver <code>recv</code> method will block the main thread’s execution and wait until a value is sent down the channel.</li><li>Receiver <code>try_recv</code> method doesn’t block, but will instead return a <code>Result&lt;T, E></code> immediately.</li><li>Receiver can be used as an iterator.</li></ul></blockquote><blockquote><ul><li><code>Mutex&lt;T></code> is a smart pointer.</li><li><code>Mutex&lt;T></code> provides interior mutability</li><li><code>Arc&lt;T></code> is a type like <code>Rc&lt;T></code> that is safe to use in concurrent situations.</li><li>Call to <code>lock</code> returns a smart pointer called <code>MutexGuard</code>.</li><li>The lock will automatically be released when a <code>MutexGuard</code> goes out of scope.</li><li>Thread safety comes with a performance penalty.</li></ul></blockquote><h3 id=1-using-threads-to-run-code-simultaneouslyhttpsdocrust-langorgstablebookch16-01-threadshtml><a href=https://doc.rust-lang.org/stable/book/ch16-01-threads.html>1. Using Threads to Run Code Simultaneously</a></h3><p>In most current operating systems, an executed program’s code is run in a <em>process</em>, and the operating system will manage multiple processes at once. Within a program, you can also have independent parts that run simultaneously. The features that run these independent parts are called <em>threads</em>.</p><p>Splitting the computation in your program into multiple threads to run multiple tasks at the same time can improve performance, but it also adds complexity. Because threads can run simultaneously, there’s no inherent guarantee about the order in which parts of your code on different threads will run. This can lead to problems, such as:</p><ul><li>Race conditions, where threads are accessing data or resources in an inconsistent order</li><li>Deadlocks, where two threads are waiting for each other, preventing both threads from continuing</li><li>Bugs that happen only in certain situations and are hard to reproduce and fix reliably</li></ul><h4 id=creating-a-new-thread-with-spawn>Creating a New Thread with spawn</h4><p>Call the <code>thread::spawn</code> function and pass it a closure.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-rust data-lang=rust><span style=display:flex><span><span style=color:#66d9ef>use</span> std::thread;
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> std::time::Duration;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>fn</span> <span style=color:#a6e22e>main</span>() {
+</span></span><span style=display:flex><span>    thread::spawn(<span style=color:#f92672>||</span> {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>for</span> i <span style=color:#66d9ef>in</span> <span style=color:#ae81ff>1</span><span style=color:#f92672>..</span><span style=color:#ae81ff>10</span> {
+</span></span><span style=display:flex><span>            println!(<span style=color:#e6db74>&#34;hi number </span><span style=color:#e6db74>{}</span><span style=color:#e6db74> from the spawned thread!&#34;</span>, i);
+</span></span><span style=display:flex><span>            thread::sleep(Duration::from_millis(<span style=color:#ae81ff>1</span>));
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>    });
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>for</span> i <span style=color:#66d9ef>in</span> <span style=color:#ae81ff>1</span><span style=color:#f92672>..</span><span style=color:#ae81ff>5</span> {
+</span></span><span style=display:flex><span>        println!(<span style=color:#e6db74>&#34;hi number </span><span style=color:#e6db74>{}</span><span style=color:#e6db74> from the main thread!&#34;</span>, i);
+</span></span><span style=display:flex><span>        thread::sleep(Duration::from_millis(<span style=color:#ae81ff>1</span>));
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Will look similar to the following:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-rust data-lang=rust><span style=display:flex><span>hi number <span style=color:#ae81ff>1</span> from the main thread<span style=color:#f92672>!</span>
+</span></span><span style=display:flex><span>hi number <span style=color:#ae81ff>1</span> from the spawned thread<span style=color:#f92672>!</span>
+</span></span><span style=display:flex><span>hi number <span style=color:#ae81ff>2</span> from the main thread<span style=color:#f92672>!</span>
+</span></span><span style=display:flex><span>hi number <span style=color:#ae81ff>2</span> from the spawned thread<span style=color:#f92672>!</span>
+</span></span><span style=display:flex><span>hi number <span style=color:#ae81ff>3</span> from the main thread<span style=color:#f92672>!</span>
+</span></span><span style=display:flex><span>hi number <span style=color:#ae81ff>3</span> from the spawned thread<span style=color:#f92672>!</span>
+</span></span><span style=display:flex><span>hi number <span style=color:#ae81ff>4</span> from the main thread<span style=color:#f92672>!</span>
+</span></span><span style=display:flex><span>hi number <span style=color:#ae81ff>4</span> from the spawned thread<span style=color:#f92672>!</span>
+</span></span><span style=display:flex><span>hi number <span style=color:#ae81ff>5</span> from the spawned thread<span style=color:#f92672>!</span>
+</span></span></code></pre></div><p>When the main thread of a Rust program completes, all spawned threads are shut down, whether or not they have finished running.</p><h4 id=waiting-for-all-threads-to-finish-using-join-handles>Waiting for All Threads to Finish Using join Handles</h4><p>Call <code>join</code> to make sure the spawned thread finishes before <code>main</code> exits.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-rust data-lang=rust><span style=display:flex><span><span style=color:#66d9ef>use</span> std::thread;
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> std::time::Duration;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>fn</span> <span style=color:#a6e22e>main</span>() {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>let</span> handle <span style=color:#f92672>=</span> thread::spawn(<span style=color:#f92672>||</span> {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>for</span> i <span style=color:#66d9ef>in</span> <span style=color:#ae81ff>1</span><span style=color:#f92672>..</span><span style=color:#ae81ff>10</span> {
+</span></span><span style=display:flex><span>            println!(<span style=color:#e6db74>&#34;hi number </span><span style=color:#e6db74>{}</span><span style=color:#e6db74> from the spawned thread!&#34;</span>, i);
+</span></span><span style=display:flex><span>            thread::sleep(Duration::from_millis(<span style=color:#ae81ff>1</span>));
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>    });
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>for</span> i <span style=color:#66d9ef>in</span> <span style=color:#ae81ff>1</span><span style=color:#f92672>..</span><span style=color:#ae81ff>5</span> {
+</span></span><span style=display:flex><span>        println!(<span style=color:#e6db74>&#34;hi number </span><span style=color:#e6db74>{}</span><span style=color:#e6db74> from the main thread!&#34;</span>, i);
+</span></span><span style=display:flex><span>        thread::sleep(Duration::from_millis(<span style=color:#ae81ff>1</span>));
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    handle.join().unwrap();
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>The two threads continue alternating, but the main thread waits because of the call to <code>handle.join()</code> and does not end until the spawned thread is finished.
+Will look similar to the following:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-rust data-lang=rust><span style=display:flex><span>hi number <span style=color:#ae81ff>1</span> from the main thread<span style=color:#f92672>!</span>
+</span></span><span style=display:flex><span>hi number <span style=color:#ae81ff>2</span> from the main thread<span style=color:#f92672>!</span>
+</span></span><span style=display:flex><span>hi number <span style=color:#ae81ff>1</span> from the spawned thread<span style=color:#f92672>!</span>
+</span></span><span style=display:flex><span>hi number <span style=color:#ae81ff>3</span> from the main thread<span style=color:#f92672>!</span>
+</span></span><span style=display:flex><span>hi number <span style=color:#ae81ff>2</span> from the spawned thread<span style=color:#f92672>!</span>
+</span></span><span style=display:flex><span>hi number <span style=color:#ae81ff>4</span> from the main thread<span style=color:#f92672>!</span>
+</span></span><span style=display:flex><span>hi number <span style=color:#ae81ff>3</span> from the spawned thread<span style=color:#f92672>!</span>
+</span></span><span style=display:flex><span>hi number <span style=color:#ae81ff>4</span> from the spawned thread<span style=color:#f92672>!</span>
+</span></span><span style=display:flex><span>hi number <span style=color:#ae81ff>5</span> from the spawned thread<span style=color:#f92672>!</span>
+</span></span><span style=display:flex><span>hi number <span style=color:#ae81ff>6</span> from the spawned thread<span style=color:#f92672>!</span>
+</span></span><span style=display:flex><span>hi number <span style=color:#ae81ff>7</span> from the spawned thread<span style=color:#f92672>!</span>
+</span></span><span style=display:flex><span>hi number <span style=color:#ae81ff>8</span> from the spawned thread<span style=color:#f92672>!</span>
+</span></span><span style=display:flex><span>hi number <span style=color:#ae81ff>9</span> from the spawned thread<span style=color:#f92672>!</span>
+</span></span></code></pre></div><p>When instead move <code>handle.join()</code> before the <code>for</code> loop in <code>main</code>.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-rust data-lang=rust><span style=display:flex><span><span style=color:#66d9ef>use</span> std::thread;
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> std::time::Duration;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>fn</span> <span style=color:#a6e22e>main</span>() {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>let</span> handle <span style=color:#f92672>=</span> thread::spawn(<span style=color:#f92672>||</span> {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>for</span> i <span style=color:#66d9ef>in</span> <span style=color:#ae81ff>1</span><span style=color:#f92672>..</span><span style=color:#ae81ff>10</span> {
+</span></span><span style=display:flex><span>            println!(<span style=color:#e6db74>&#34;hi number </span><span style=color:#e6db74>{}</span><span style=color:#e6db74> from the spawned thread!&#34;</span>, i);
+</span></span><span style=display:flex><span>            thread::sleep(Duration::from_millis(<span style=color:#ae81ff>1</span>));
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>    });
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    handle.join().unwrap();
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>for</span> i <span style=color:#66d9ef>in</span> <span style=color:#ae81ff>1</span><span style=color:#f92672>..</span><span style=color:#ae81ff>5</span> {
+</span></span><span style=display:flex><span>        println!(<span style=color:#e6db74>&#34;hi number </span><span style=color:#e6db74>{}</span><span style=color:#e6db74> from the main thread!&#34;</span>, i);
+</span></span><span style=display:flex><span>        thread::sleep(Duration::from_millis(<span style=color:#ae81ff>1</span>));
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>The main thread will wait for the spawned thread to finish and then run its <code>for</code> loop, so the output won’t be interleaved anymore.
+Will look similar to the following:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-rust data-lang=rust><span style=display:flex><span>hi number <span style=color:#ae81ff>1</span> from the spawned thread<span style=color:#f92672>!</span>
+</span></span><span style=display:flex><span>hi number <span style=color:#ae81ff>2</span> from the spawned thread<span style=color:#f92672>!</span>
+</span></span><span style=display:flex><span>hi number <span style=color:#ae81ff>3</span> from the spawned thread<span style=color:#f92672>!</span>
+</span></span><span style=display:flex><span>hi number <span style=color:#ae81ff>4</span> from the spawned thread<span style=color:#f92672>!</span>
+</span></span><span style=display:flex><span>hi number <span style=color:#ae81ff>5</span> from the spawned thread<span style=color:#f92672>!</span>
+</span></span><span style=display:flex><span>hi number <span style=color:#ae81ff>6</span> from the spawned thread<span style=color:#f92672>!</span>
+</span></span><span style=display:flex><span>hi number <span style=color:#ae81ff>7</span> from the spawned thread<span style=color:#f92672>!</span>
+</span></span><span style=display:flex><span>hi number <span style=color:#ae81ff>8</span> from the spawned thread<span style=color:#f92672>!</span>
+</span></span><span style=display:flex><span>hi number <span style=color:#ae81ff>9</span> from the spawned thread<span style=color:#f92672>!</span>
+</span></span><span style=display:flex><span>hi number <span style=color:#ae81ff>1</span> from the main thread<span style=color:#f92672>!</span>
+</span></span><span style=display:flex><span>hi number <span style=color:#ae81ff>2</span> from the main thread<span style=color:#f92672>!</span>
+</span></span><span style=display:flex><span>hi number <span style=color:#ae81ff>3</span> from the main thread<span style=color:#f92672>!</span>
+</span></span><span style=display:flex><span>hi number <span style=color:#ae81ff>4</span> from the main thread<span style=color:#f92672>!</span>
+</span></span></code></pre></div><h4 id=using-move-closures-with-threads>Using move Closures with Threads</h4><p>Use the <code>move</code> keyword with closures passed to <code>thread::spawn</code> because the closure will then take ownership of the values it uses from the environment, thus transferring ownership of those values from one thread to another.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-rust data-lang=rust><span style=display:flex><span><span style=color:#75715e>// This code does not compile
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#66d9ef>use</span> std::thread;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>fn</span> <span style=color:#a6e22e>main</span>() {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>let</span> v <span style=color:#f92672>=</span> vec![<span style=color:#ae81ff>1</span>, <span style=color:#ae81ff>2</span>, <span style=color:#ae81ff>3</span>];
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>let</span> handle <span style=color:#f92672>=</span> thread::spawn(<span style=color:#f92672>||</span> {  <span style=color:#75715e>// error: may outlive borrowed value `v`
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>        println!(<span style=color:#e6db74>&#34;Here&#39;s a vector: </span><span style=color:#e6db74>{:?}</span><span style=color:#e6db74>&#34;</span>, v);
+</span></span><span style=display:flex><span>    });
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    handle.join().unwrap();
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-rust data-lang=rust><span style=display:flex><span><span style=color:#66d9ef>use</span> std::thread;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>fn</span> <span style=color:#a6e22e>main</span>() {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>let</span> v <span style=color:#f92672>=</span> vec![<span style=color:#ae81ff>1</span>, <span style=color:#ae81ff>2</span>, <span style=color:#ae81ff>3</span>];
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>let</span> handle <span style=color:#f92672>=</span> thread::spawn(<span style=color:#66d9ef>move</span> <span style=color:#f92672>||</span> {
+</span></span><span style=display:flex><span>        println!(<span style=color:#e6db74>&#34;Here&#39;s a vector: </span><span style=color:#e6db74>{:?}</span><span style=color:#e6db74>&#34;</span>, v);
+</span></span><span style=display:flex><span>    });
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    handle.join().unwrap();
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h3 id=2-using-message-passing-to-transfer-data-between-threadshttpsdocrust-langorgstablebookch16-02-message-passinghtml><a href=https://doc.rust-lang.org/stable/book/ch16-02-message-passing.html>2. Using Message Passing to Transfer Data Between Threads</a></h3><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-rust data-lang=rust><span style=display:flex><span><span style=color:#66d9ef>use</span> std::sync::mpsc;
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> std::thread;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>fn</span> <span style=color:#a6e22e>main</span>() {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>let</span> (tx, rx) <span style=color:#f92672>=</span> mpsc::channel();
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    thread::spawn(<span style=color:#66d9ef>move</span> <span style=color:#f92672>||</span> {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>let</span> val <span style=color:#f92672>=</span> String::from(<span style=color:#e6db74>&#34;hi&#34;</span>);
+</span></span><span style=display:flex><span>        tx.send(val).unwrap();
+</span></span><span style=display:flex><span>    });
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>let</span> received <span style=color:#f92672>=</span> rx.recv().unwrap();
+</span></span><span style=display:flex><span>    println!(<span style=color:#e6db74>&#34;Got: </span><span style=color:#e6db74>{}</span><span style=color:#e6db74>&#34;</span>, received);
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p><code>recv</code> will block the main thread’s execution and wait until a value is sent down the channel. Once a value is sent, <code>recv</code> will return it in a <code>Result&lt;T, E></code>. When the transmitter closes, <code>recv</code> will return an error to signal that no more values will be coming.</p><p><code>try_recv</code> method doesn’t block, but will instead return a <code>Result&lt;T, E></code> immediately: an <code>Ok</code> value holding a message if one is available and an <code>Err</code> value if there aren’t any messages this time. Using <code>try_recv</code> is useful if this thread has other work to do while waiting for messages: we could write a loop that calls <code>try_recv</code> every so often, handles a message if one is available, and otherwise does other work for a little while until checking again.</p><h4 id=channels-and-ownership-transference>Channels and Ownership Transference</h4><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-rust data-lang=rust><span style=display:flex><span><span style=color:#75715e>// This code does not compile
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#66d9ef>use</span> std::sync::mpsc;
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> std::thread;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>fn</span> <span style=color:#a6e22e>main</span>() {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>let</span> (tx, rx) <span style=color:#f92672>=</span> mpsc::channel();
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    thread::spawn(<span style=color:#66d9ef>move</span> <span style=color:#f92672>||</span> {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>let</span> val <span style=color:#f92672>=</span> String::from(<span style=color:#e6db74>&#34;hi&#34;</span>);
+</span></span><span style=display:flex><span>        tx.send(val).unwrap();
+</span></span><span style=display:flex><span>        println!(<span style=color:#e6db74>&#34;val is </span><span style=color:#e6db74>{}</span><span style=color:#e6db74>&#34;</span>, val);  <span style=color:#75715e>// error: borrow of moved value: `val`
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>    });
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>let</span> received <span style=color:#f92672>=</span> rx.recv().unwrap();
+</span></span><span style=display:flex><span>    println!(<span style=color:#e6db74>&#34;Got: </span><span style=color:#e6db74>{}</span><span style=color:#e6db74>&#34;</span>, received);
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p><code>send</code> takes ownership of its parameter, and when the value is moved, the receiver takes ownership of it.</p><h4 id=sending-multiple-values-and-seeing-the-receiver-waiting>Sending Multiple Values and Seeing the Receiver Waiting</h4><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-rust data-lang=rust><span style=display:flex><span><span style=color:#66d9ef>use</span> std::sync::mpsc;
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> std::thread;
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> std::time::Duration;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>fn</span> <span style=color:#a6e22e>main</span>() {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>let</span> (tx, rx) <span style=color:#f92672>=</span> mpsc::channel();
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    thread::spawn(<span style=color:#66d9ef>move</span> <span style=color:#f92672>||</span> {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>let</span> vals <span style=color:#f92672>=</span> vec![
+</span></span><span style=display:flex><span>            String::from(<span style=color:#e6db74>&#34;hi&#34;</span>),
+</span></span><span style=display:flex><span>            String::from(<span style=color:#e6db74>&#34;from&#34;</span>),
+</span></span><span style=display:flex><span>            String::from(<span style=color:#e6db74>&#34;the&#34;</span>),
+</span></span><span style=display:flex><span>            String::from(<span style=color:#e6db74>&#34;thread&#34;</span>),
+</span></span><span style=display:flex><span>        ];
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>for</span> val <span style=color:#66d9ef>in</span> vals {
+</span></span><span style=display:flex><span>            tx.send(val).unwrap();
+</span></span><span style=display:flex><span>            thread::sleep(Duration::from_secs(<span style=color:#ae81ff>1</span>));
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>    });
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>for</span> received <span style=color:#66d9ef>in</span> rx {
+</span></span><span style=display:flex><span>        println!(<span style=color:#e6db74>&#34;Got: </span><span style=color:#e6db74>{}</span><span style=color:#e6db74>&#34;</span>, received);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>In the main thread, we’re not calling the <code>recv</code> function explicitly anymore: instead, we’re treating <code>rx</code> as an iterator. For each value received, we’re printing it. When the channel is closed, iteration will end.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-rust data-lang=rust><span style=display:flex><span>Got: <span style=color:#a6e22e>hi</span>
+</span></span><span style=display:flex><span>Got: <span style=color:#a6e22e>from</span>
+</span></span><span style=display:flex><span>Got: <span style=color:#a6e22e>the</span>
+</span></span><span style=display:flex><span>Got: <span style=color:#a6e22e>thread</span>
+</span></span></code></pre></div><h4 id=creating-multiple-producers-by-cloning-the-transmitter>Creating Multiple Producers by Cloning the Transmitter</h4><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-rust data-lang=rust><span style=display:flex><span><span style=color:#66d9ef>use</span> std::sync::mpsc;
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> std::thread;
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> std::time::Duration;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>fn</span> <span style=color:#a6e22e>main</span>() {
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// --snip--
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>let</span> (tx, rx) <span style=color:#f92672>=</span> mpsc::channel();
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>let</span> tx1 <span style=color:#f92672>=</span> tx.clone();
+</span></span><span style=display:flex><span>    thread::spawn(<span style=color:#66d9ef>move</span> <span style=color:#f92672>||</span> {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>let</span> vals <span style=color:#f92672>=</span> vec![
+</span></span><span style=display:flex><span>            String::from(<span style=color:#e6db74>&#34;hi&#34;</span>),
+</span></span><span style=display:flex><span>            String::from(<span style=color:#e6db74>&#34;from&#34;</span>),
+</span></span><span style=display:flex><span>            String::from(<span style=color:#e6db74>&#34;the&#34;</span>),
+</span></span><span style=display:flex><span>            String::from(<span style=color:#e6db74>&#34;thread&#34;</span>),
+</span></span><span style=display:flex><span>        ];
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>for</span> val <span style=color:#66d9ef>in</span> vals {
+</span></span><span style=display:flex><span>            tx1.send(val).unwrap();
+</span></span><span style=display:flex><span>            thread::sleep(Duration::from_secs(<span style=color:#ae81ff>1</span>));
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>    });
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    thread::spawn(<span style=color:#66d9ef>move</span> <span style=color:#f92672>||</span> {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>let</span> vals <span style=color:#f92672>=</span> vec![
+</span></span><span style=display:flex><span>            String::from(<span style=color:#e6db74>&#34;more&#34;</span>),
+</span></span><span style=display:flex><span>            String::from(<span style=color:#e6db74>&#34;messages&#34;</span>),
+</span></span><span style=display:flex><span>            String::from(<span style=color:#e6db74>&#34;for&#34;</span>),
+</span></span><span style=display:flex><span>            String::from(<span style=color:#e6db74>&#34;you&#34;</span>),
+</span></span><span style=display:flex><span>        ];
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>for</span> val <span style=color:#66d9ef>in</span> vals {
+</span></span><span style=display:flex><span>            tx.send(val).unwrap();
+</span></span><span style=display:flex><span>            thread::sleep(Duration::from_secs(<span style=color:#ae81ff>1</span>));
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>    });
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>for</span> received <span style=color:#66d9ef>in</span> rx {
+</span></span><span style=display:flex><span>        println!(<span style=color:#e6db74>&#34;Got: </span><span style=color:#e6db74>{}</span><span style=color:#e6db74>&#34;</span>, received);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#75715e>// --snip--
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>}
+</span></span></code></pre></div><p>Call <code>clone</code> on the transmitter. This will give us a new transmitter.
+Will look similar to the following:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-rust data-lang=rust><span style=display:flex><span>Got: <span style=color:#a6e22e>hi</span>
+</span></span><span style=display:flex><span>Got: <span style=color:#a6e22e>more</span>
+</span></span><span style=display:flex><span>Got: <span style=color:#a6e22e>from</span>
+</span></span><span style=display:flex><span>Got: <span style=color:#a6e22e>messages</span>
+</span></span><span style=display:flex><span>Got: <span style=color:#a6e22e>for</span>
+</span></span><span style=display:flex><span>Got: <span style=color:#a6e22e>the</span>
+</span></span><span style=display:flex><span>Got: <span style=color:#a6e22e>thread</span>
+</span></span><span style=display:flex><span>Got: <span style=color:#a6e22e>you</span>
+</span></span></code></pre></div><h3 id=shared-state-concurrencyhttpsdocrust-langorgstablebookch16-03-shared-statehtml><a href=https://doc.rust-lang.org/stable/book/ch16-03-shared-state.html>Shared-State Concurrency</a></h3><h4 id=using-mutexes-to-allow-access-to-data-from-one-thread-at-a-time>Using Mutexes to Allow Access to Data from One Thread at a Time</h4><p><em>Mutex</em> is an abbreviation for <em>mutual exclusion</em>, as in, a mutex allows only one thread to access some data at any given time. To access the data in a mutex, a thread must first signal that it wants access by asking to acquire the mutex’s <em>lock</em>. The lock is a data structure that is part of the mutex that keeps track of who currently has exclusive access to the data. Therefore, the mutex is described as <em>guarding</em> the data it holds via the locking system.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-rust data-lang=rust><span style=display:flex><span><span style=color:#66d9ef>use</span> std::sync::Mutex;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>fn</span> <span style=color:#a6e22e>main</span>() {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>let</span> m <span style=color:#f92672>=</span> Mutex::new(<span style=color:#ae81ff>5</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>let</span> <span style=color:#66d9ef>mut</span> num <span style=color:#f92672>=</span> m.lock().unwrap();
+</span></span><span style=display:flex><span>        <span style=color:#f92672>*</span>num <span style=color:#f92672>=</span> <span style=color:#ae81ff>6</span>;
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    println!(<span style=color:#e6db74>&#34;m = </span><span style=color:#e6db74>{:?}</span><span style=color:#e6db74>&#34;</span>, m);
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Use the <code>lock</code> method to acquire the lock. This call will block the current thread so it can’t do any work until it’s our turn to have the lock.</p><p>The call to <code>lock</code> would fail if another thread holding the lock panicked. In that case, no one would ever be able to get the lock, so we’ve chosen to <code>unwrap</code> and have this thread panic if we’re in that situation.</p><p><code>Mutex&lt;T></code> is a smart pointer. More accurately, the call to <code>lock</code> <em>returns</em> a smart pointer called <code>MutexGuard</code>, wrapped in a <code>LockResult</code> that we handled with the call to <code>unwrap</code>. The <code>MutexGuard</code> smart pointer implements <code>Deref</code> to point at our inner data; the smart pointer also has a <code>Drop</code> implementation that releases the lock automatically when a <code>MutexGuard</code> goes out of scope, which happens at the end of the inner scope.</p><h4 id=sharing-a-mutext-between-multiple-threads>Sharing a Mutex Between Multiple Threads</h4><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-rust data-lang=rust><span style=display:flex><span><span style=color:#75715e>// This code does not compile
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span><span style=color:#66d9ef>use</span> std::sync::Mutex;
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> std::thread;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>fn</span> <span style=color:#a6e22e>main</span>() {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>let</span> counter <span style=color:#f92672>=</span> Mutex::new(<span style=color:#ae81ff>0</span>);
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>let</span> <span style=color:#66d9ef>mut</span> handles <span style=color:#f92672>=</span> vec![];
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>for</span> _ <span style=color:#66d9ef>in</span> <span style=color:#ae81ff>0</span><span style=color:#f92672>..</span><span style=color:#ae81ff>10</span> {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>let</span> handle <span style=color:#f92672>=</span> thread::spawn(<span style=color:#66d9ef>move</span> <span style=color:#f92672>||</span> {  <span style=color:#75715e>// value moved into closure here, in previous iteration of loop
+</span></span></span><span style=display:flex><span><span style=color:#75715e></span>            <span style=color:#66d9ef>let</span> <span style=color:#66d9ef>mut</span> num <span style=color:#f92672>=</span> counter.lock().unwrap(); 
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>            <span style=color:#f92672>*</span>num <span style=color:#f92672>+=</span> <span style=color:#ae81ff>1</span>;
+</span></span><span style=display:flex><span>        });
+</span></span><span style=display:flex><span>        handles.push(handle);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>for</span> handle <span style=color:#66d9ef>in</span> handles {
+</span></span><span style=display:flex><span>        handle.join().unwrap();
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    println!(<span style=color:#e6db74>&#34;Result: </span><span style=color:#e6db74>{}</span><span style=color:#e6db74>&#34;</span>, <span style=color:#f92672>*</span>counter.lock().unwrap());
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p><code>Arc&lt;T></code> <em>is</em> a type like <code>Rc&lt;T></code> that is safe to use in concurrent situations.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-rust data-lang=rust><span style=display:flex><span><span style=color:#66d9ef>use</span> std::sync::{Arc, Mutex};
+</span></span><span style=display:flex><span><span style=color:#66d9ef>use</span> std::thread;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>fn</span> <span style=color:#a6e22e>main</span>() {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>let</span> counter <span style=color:#f92672>=</span> Arc::new(Mutex::new(<span style=color:#ae81ff>0</span>));
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>let</span> <span style=color:#66d9ef>mut</span> handles <span style=color:#f92672>=</span> vec![];
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>for</span> _ <span style=color:#66d9ef>in</span> <span style=color:#ae81ff>0</span><span style=color:#f92672>..</span><span style=color:#ae81ff>10</span> {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>let</span> counter <span style=color:#f92672>=</span> Arc::clone(<span style=color:#f92672>&amp;</span>counter);
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>let</span> handle <span style=color:#f92672>=</span> thread::spawn(<span style=color:#66d9ef>move</span> <span style=color:#f92672>||</span> {
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>let</span> <span style=color:#66d9ef>mut</span> num <span style=color:#f92672>=</span> counter.lock().unwrap();
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>            <span style=color:#f92672>*</span>num <span style=color:#f92672>+=</span> <span style=color:#ae81ff>1</span>;
+</span></span><span style=display:flex><span>        });
+</span></span><span style=display:flex><span>        handles.push(handle);
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>for</span> handle <span style=color:#66d9ef>in</span> handles {
+</span></span><span style=display:flex><span>        handle.join().unwrap();
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    println!(<span style=color:#e6db74>&#34;Result: </span><span style=color:#e6db74>{}</span><span style=color:#e6db74>&#34;</span>, <span style=color:#f92672>*</span>counter.lock().unwrap());
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p><code>Mutex&lt;T></code> provides interior mutability.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-rust data-lang=rust><span style=display:flex><span>Result: <span style=color:#ae81ff>10</span>
+</span></span></code></pre></div></section><footer class="mt-12 flex flex-wrap"><a class="mb-1.5 mr-1.5 rounded-lg bg-black/[3%] px-5 py-1.5 no-underline dark:bg-white/[8%]" href=https://sricor.github.io/tags/rust>Rust</a>
+<a class="mb-1.5 mr-1.5 rounded-lg bg-black/[3%] px-5 py-1.5 no-underline dark:bg-white/[8%]" href=https://sricor.github.io/tags/programming>Programming</a></footer></article></main><footer class="opaco mx-auto flex h-[4.5rem] max-w-3xl items-center px-8 text-[0.9em] opacity-60"><div class=mr-auto>&copy; 2023
+<a class=link href=https://sricor.github.io/>Paper</a></div></footer></body></html>
