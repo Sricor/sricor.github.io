@@ -43,4 +43,4 @@ jobs:
           github_token: ${{ secrets.ACTION_ACCESS_TOKEN }}
           publish_dir: ./public                       # Hugo static content folder
           publish_branch: gh-pages
-          force_orphan: true
+          force_orphan: false
