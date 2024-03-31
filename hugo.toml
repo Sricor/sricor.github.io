@@ -1,7 +1,7 @@
 title = 'Paper'
 theme = "paper"
 languageCode = 'zh-cn'
-baseURL = 'https://sricor.github.io/'
+baseURL = '/'
 
 [params]
 color = 'linen'
