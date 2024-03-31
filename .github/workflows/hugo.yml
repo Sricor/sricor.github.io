@@ -44,3 +44,4 @@ jobs:
           publish_dir: ./public                       # Hugo static content folder
           publish_branch: gh-pages
           force_orphan: false
+          cname: ioaths.com
