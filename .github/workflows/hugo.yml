@@ -34,7 +34,9 @@ jobs:
           hugo-version: 'latest'
 
       - name: Build
-        run: hugo --minify                           # Hugo Build
+        run: | 
+          git submodule update --remote --merge
+          hugo --minify                           # Hugo Build
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
