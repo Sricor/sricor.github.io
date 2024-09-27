@@ -1,7 +1,150 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Rust on Paper</title><link>/tags/rust/</link><description>Recent content in Rust on Paper</description><generator>Hugo</generator><language>zh-cn</language><lastBuildDate>Wed, 13 Dec 2023 00:00:00 +0000</lastBuildDate><atom:link href="/tags/rust/index.xml" rel="self" type="application/rss+xml"/><item><title>Rust Fearless Concurrency</title><link>/posts/public/rust/fearless-concurrency/</link><pubDate>Wed, 13 Dec 2023 00:00:00 +0000</pubDate><guid>/posts/public/rust/fearless-concurrency/</guid><description>Call the std::thread::spawn function and pass it a closure to Create a new thread. All spawned threads are shut down, when the main thread completes. Call the join method on it, will wait for its thread to finish. std::mpsc::channel function returns a tuple, the first element of which is the transmitter and the second element is the receiver. Transmitter send method takes ownership of its parameter. Receiver recv method will block the main thread’s execution and wait until a value is sent down the channel.</description></item><item><title>Rust Smart Pointers</title><link>/posts/public/rust/smart-pointers/</link><pubDate>Tue, 12 Dec 2023 00:00:00 +0000</pubDate><guid>/posts/public/rust/smart-pointers/</guid><description>Box&amp;lt;T&amp;gt; have single owners Box&amp;lt;T&amp;gt; allow to store data on the heap. Box&amp;lt;T&amp;gt; is a pointer, point to data on the heap. When a box goes out of scope, it will be deallocated (both for the heap and stack). Implementing the Deref trait allows to customize the behavior of the dereference operator *. Implementing the Drop trait, Rust automatically called drop when instances went out of scope. Not allowed to explicitly call drop.</description></item><item><title>Rust Ownership - Reference and Borrowing</title><link>/posts/public/rust/ownership-reference-borrowing/</link><pubDate>Mon, 11 Dec 2023 00:00:00 +0000</pubDate><guid>/posts/public/rust/ownership-reference-borrowing/</guid><description>引用与借用 引用允许使用值但不获取其所有权 the ownership system that makes sure references are always valid 引用的作用域是从声明的地方开始一直持续到最后一次使用为止 引用默认不允许修改引用的值，可使用 mut 关键字使其为可变引用 在任意给定时间，要么只能有一个可变引用，要么只能有多个不可变引用 引用 引用（reference）是一个地址，我们可以由此访问储存于该地址的属于其变量的数据，创建一个引用的行为称为借用（borrowing）。
-fn main() { let s1 = String::from(&amp;#34;hello&amp;#34;); let len = calculate_length(&amp;amp;s1); println!(&amp;#34;The length of &amp;#39;{}&amp;#39; is {}.&amp;#34;, s1, len); } fn calculate_length(s: &amp;amp;String) -&amp;gt; usize { // s 是 String 的引用 s.len() } // 这里，s 离开了作用域。但因为它并不拥有引用值的所有权，所以什么也不会发生 calculate_length 函数以一个对象的引用作为参数而不是获取值的所有权。 &amp;amp;s1 语法让我们创建一个 指向 值 s1 的引用，但是并不拥有它，所以当引用停止使用时，它所指向的值也不会被丢弃。
-可变引用 可变引用允许修改一个借用的值。
-fn main() { let mut s = String::from(&amp;#34;hello&amp;#34;); change(&amp;amp;mut s); } fn change(some_string: &amp;amp;mut String) { some_string.</description></item><item><title>Rust Ownership - Scope</title><link>/posts/public/rust/ownership-scope/</link><pubDate>Sun, 10 Dec 2023 00:00:00 +0000</pubDate><guid>/posts/public/rust/ownership-scope/</guid><description>变量的作用域 作用域是一个项在程序中有效的范围。
-{ // s 在这里无效，它尚未声明 let s = &amp;#34;hello&amp;#34;; // 从此处起，s 是有效的 ... } // 此作用域已结束，s 不再有效 变量 s 绑定到了一个字符串字面值，这个字符串值是硬编码进程序代码中的。
-这里有两个重要的时间点：
-当 s 进入作用域 时，它就是有效的。 这一直持续到它 离开作用域 为止。 引用的作用域 引用的作用域是从声明的地方开始一直持续到最后一次使用为止</description></item><item><title>Rust Ownership</title><link>/posts/public/rust/ownership/</link><pubDate>Sat, 09 Dec 2023 00:00:00 +0000</pubDate><guid>/posts/public/rust/ownership/</guid><description>所有权 每一个值都有一个所有者 At any given time, you can have either (but not both) one mutable reference or any number of immutable references. References must always be valid. 将值赋给另一个变量（包含函数实参）时移动它 当持有堆中数据值的变量离开作用域时，其值将通过 drop 被清理掉，除非数据被移动为另一个变量所有 所有权与函数 fn main() { let s = String::from(&amp;#34;hello&amp;#34;); // s 进入作用域 takes_ownership(s); // s 的值移动到函数里 ... // ... 所以到这里不再有效 let x = 5; // x 进入作用域 makes_copy(x); // x 应该移动函数里， // 但 i32 是 Copy 的， // 所以在后面可继续使用 x } // 这里，x 先移出了作用域，然后是 s。但因为 s 的值已被移走，所以不会发生改变 fn takes_ownership(some_string: String) { // some_string 进入作用域 println!</description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Rust on Paper</title><link>/tags/rust/</link><description>Recent content in Rust on Paper</description><generator>Hugo</generator><language>zh-cn</language><lastBuildDate>Wed, 13 Dec 2023 00:00:00 +0000</lastBuildDate><atom:link href="/tags/rust/index.xml" rel="self" type="application/rss+xml"/><item><title>Rust Fearless Concurrency</title><link>/posts/public/rust/fearless-concurrency/</link><pubDate>Wed, 13 Dec 2023 00:00:00 +0000</pubDate><guid>/posts/public/rust/fearless-concurrency/</guid><description>&lt;blockquote>
+&lt;ul>
+&lt;li>Call the &lt;code>std::thread::spawn&lt;/code> function and pass it a closure to Create a new thread.&lt;/li>
+&lt;li>All spawned threads are shut down, when the main thread completes.&lt;/li>
+&lt;li>Call the &lt;code>join&lt;/code> method on it, will wait for its thread to finish.&lt;/li>
+&lt;/ul>
+&lt;/blockquote>
+&lt;blockquote>
+&lt;ul>
+&lt;li>&lt;code>std::mpsc::channel&lt;/code> function returns a tuple, the first element of which is the transmitter and the second element is the receiver.&lt;/li>
+&lt;li>Transmitter &lt;code>send&lt;/code> method takes ownership of its parameter.&lt;/li>
+&lt;li>Receiver &lt;code>recv&lt;/code> method will block the main thread’s execution and wait until a value is sent down the channel.&lt;/li>
+&lt;li>Receiver &lt;code>try_recv&lt;/code> method doesn’t block, but will instead return a &lt;code>Result&amp;lt;T, E&amp;gt;&lt;/code> immediately.&lt;/li>
+&lt;li>Receiver can be used as an iterator.&lt;/li>
+&lt;/ul>
+&lt;/blockquote>
+&lt;blockquote>
+&lt;ul>
+&lt;li>&lt;code>Mutex&amp;lt;T&amp;gt;&lt;/code> is a smart pointer.&lt;/li>
+&lt;li>&lt;code>Mutex&amp;lt;T&amp;gt;&lt;/code> provides interior mutability&lt;/li>
+&lt;li>&lt;code>Arc&amp;lt;T&amp;gt;&lt;/code> is a type like &lt;code>Rc&amp;lt;T&amp;gt;&lt;/code> that is safe to use in concurrent situations.&lt;/li>
+&lt;li>Call to &lt;code>lock&lt;/code> returns a smart pointer called &lt;code>MutexGuard&lt;/code>.&lt;/li>
+&lt;li>The lock will automatically be released when a &lt;code>MutexGuard&lt;/code> goes out of scope.&lt;/li>
+&lt;li>Thread safety comes with a performance penalty.&lt;/li>
+&lt;/ul>
+&lt;/blockquote>
+&lt;h3 id="1-using-threads-to-run-code-simultaneouslyhttpsdocrust-langorgstablebookch16-01-threadshtml">&lt;a href="https://doc.rust-lang.org/stable/book/ch16-01-threads.html">1. Using Threads to Run Code Simultaneously&lt;/a>&lt;/h3>
+&lt;p>In most current operating systems, an executed program’s code is run in a &lt;em>process&lt;/em>, and the operating system will manage multiple processes at once. Within a program, you can also have independent parts that run simultaneously. The features that run these independent parts are called &lt;em>threads&lt;/em>.&lt;/p></description></item><item><title>Rust Smart Pointers</title><link>/posts/public/rust/smart-pointers/</link><pubDate>Tue, 12 Dec 2023 00:00:00 +0000</pubDate><guid>/posts/public/rust/smart-pointers/</guid><description>&lt;blockquote>
+&lt;ul>
+&lt;li>&lt;code>Box&amp;lt;T&amp;gt;&lt;/code> have single owners&lt;/li>
+&lt;li>&lt;code>Box&amp;lt;T&amp;gt;&lt;/code> allow to store data on the heap.&lt;/li>
+&lt;li>&lt;code>Box&amp;lt;T&amp;gt;&lt;/code> is a pointer, point to data on the heap.&lt;/li>
+&lt;li>When a box goes out of scope, it will be deallocated (both for the heap and stack).&lt;/li>
+&lt;/ul>
+&lt;/blockquote>
+&lt;blockquote>
+&lt;ul>
+&lt;li>Implementing the &lt;code>Deref&lt;/code> trait allows to customize the behavior of the dereference operator &lt;code>*&lt;/code>.&lt;/li>
+&lt;/ul>
+&lt;/blockquote>
+&lt;blockquote>
+&lt;ul>
+&lt;li>Implementing the &lt;code>Drop&lt;/code> trait, Rust automatically called &lt;code>drop&lt;/code> when instances went out of scope.&lt;/li>
+&lt;li>Not allowed to explicitly call &lt;code>drop&lt;/code>.&lt;/li>
+&lt;li>Can drop a value early with &lt;code>std::mem::drop&lt;/code>.&lt;/li>
+&lt;li>Variables are dropped in the reverse order of their creation.&lt;/li>
+&lt;/ul>
+&lt;/blockquote>
+&lt;blockquote>
+&lt;ul>
+&lt;li>&lt;code>Rc&amp;lt;T&amp;gt;&lt;/code> allows a single value to have multiple owners.&lt;/li>
+&lt;li>&lt;code>Rc&amp;lt;T&amp;gt;&lt;/code> allows only immutable borrows checked at compile time.&lt;/li>
+&lt;li>&lt;code>Rc&amp;lt;T&amp;gt;&lt;/code> only gives immutable access to that data.&lt;/li>
+&lt;li>&lt;code>Rc&amp;lt;T&amp;gt;&lt;/code> only for use in single-threaded scenarios.&lt;/li>
+&lt;li>&lt;code>Rc::clone&lt;/code> does not make a deep copy, it does not take much time.&lt;/li>
+&lt;li>&lt;code>Drop&lt;/code> trait decreases the reference count automatically when an &lt;code>Rc&amp;lt;T&amp;gt;&lt;/code> value goes out of scope&lt;/li>
+&lt;/ul>
+&lt;/blockquote>
+&lt;blockquote>
+&lt;ul>
+&lt;li>&lt;code>RefCell&amp;lt;T&amp;gt;&lt;/code> have single owners.&lt;/li>
+&lt;li>&lt;code>RefCell&amp;lt;T&amp;gt;&lt;/code> allows immutable or mutable borrows checked at runtime.&lt;/li>
+&lt;li>&lt;code>RefCell&amp;lt;T&amp;gt;&lt;/code> will panic at runtime when try to violate borrow rules.&lt;/li>
+&lt;li>&lt;code>RefCell&amp;lt;T&amp;gt;&lt;/code> only for use in single-threaded scenarios.&lt;/li>
+&lt;/ul>
+&lt;/blockquote>
+&lt;h3 id="1-using-boxt-to-point-to-data-on-the-heaphttpsdocrust-langorgstablebookch15-01-boxhtml">&lt;a href="https://doc.rust-lang.org/stable/book/ch15-01-box.html">1. Using Box&lt;!-- raw HTML omitted --> to Point to Data on the Heap&lt;/a>&lt;/h3>
+&lt;p>Boxes allow to store data on the heap rather than the stack.&lt;/p></description></item><item><title>Rust Ownership - Reference and Borrowing</title><link>/posts/public/rust/ownership-reference-borrowing/</link><pubDate>Mon, 11 Dec 2023 00:00:00 +0000</pubDate><guid>/posts/public/rust/ownership-reference-borrowing/</guid><description>&lt;h3 id="引用与借用">引用与借用&lt;/h3>
+&lt;blockquote>
+&lt;ul>
+&lt;li>引用允许使用值但不获取其所有权&lt;/li>
+&lt;li>the ownership system that makes sure references are always valid&lt;/li>
+&lt;li>引用的作用域是从声明的地方开始一直持续到最后一次使用为止&lt;/li>
+&lt;li>引用默认不允许修改引用的值，可使用 &lt;code>mut&lt;/code> 关键字使其为可变引用&lt;/li>
+&lt;li>在任意给定时间，要么只能有一个可变引用，要么只能有多个不可变引用&lt;/li>
+&lt;/ul>
+&lt;/blockquote>
+&lt;h4 id="引用">引用&lt;/h4>
+&lt;p>&lt;strong>引用&lt;/strong>（&lt;em>reference&lt;/em>）是一个地址，我们可以由此访问储存于该地址的属于其变量的数据，创建一个引用的行为称为&lt;strong>借用&lt;/strong>（&lt;em>borrowing&lt;/em>）。&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-rust" data-lang="rust">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">fn&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>() {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">let&lt;/span> s1 &lt;span style="color:#f92672">=&lt;/span> String::from(&lt;span style="color:#e6db74">&amp;#34;hello&amp;#34;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">let&lt;/span> len &lt;span style="color:#f92672">=&lt;/span> calculate_length(&lt;span style="color:#f92672">&amp;amp;&lt;/span>s1);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> println!(&lt;span style="color:#e6db74">&amp;#34;The length of &amp;#39;&lt;/span>&lt;span style="color:#e6db74">{}&lt;/span>&lt;span style="color:#e6db74">&amp;#39; is &lt;/span>&lt;span style="color:#e6db74">{}&lt;/span>&lt;span style="color:#e6db74">.&amp;#34;&lt;/span>, s1, len);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">fn&lt;/span> &lt;span style="color:#a6e22e">calculate_length&lt;/span>(s: &lt;span style="color:#66d9ef">&amp;amp;&lt;/span>String) -&amp;gt; &lt;span style="color:#66d9ef">usize&lt;/span> { &lt;span style="color:#75715e">// s 是 String 的引用
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> s.len()
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>} &lt;span style="color:#75715e">// 这里，s 离开了作用域。但因为它并不拥有引用值的所有权，所以什么也不会发生
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;code>calculate_length&lt;/code> 函数以一个对象的引用作为参数而不是获取值的所有权。
+&lt;code>&amp;amp;s1&lt;/code> 语法让我们创建一个 &lt;strong>指向&lt;/strong> 值 &lt;code>s1&lt;/code> 的引用，但是并不拥有它，所以当引用停止使用时，它所指向的值也不会被丢弃。&lt;/p>
+&lt;h4 id="可变引用">可变引用&lt;/h4>
+&lt;p>可变引用允许修改一个借用的值。&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-rust" data-lang="rust">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">fn&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>() {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">let&lt;/span> &lt;span style="color:#66d9ef">mut&lt;/span> s &lt;span style="color:#f92672">=&lt;/span> String::from(&lt;span style="color:#e6db74">&amp;#34;hello&amp;#34;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> change(&lt;span style="color:#f92672">&amp;amp;&lt;/span>&lt;span style="color:#66d9ef">mut&lt;/span> s);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">fn&lt;/span> &lt;span style="color:#a6e22e">change&lt;/span>(some_string: &lt;span style="color:#66d9ef">&amp;amp;&lt;/span>&lt;span style="color:#a6e22e">mut&lt;/span> String) {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> some_string.push_str(&lt;span style="color:#e6db74">&amp;#34;, world!&amp;#34;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;strong>在任意给定时间，同一作用域内，要么只能有一个可变引用，要么只能有多个不可变引用&lt;/strong>，这一限制防止同一时间对同一数据存在多个可变引用，在编译时就避免数据竞争。&lt;/p></description></item><item><title>Rust Ownership - Scope</title><link>/posts/public/rust/ownership-scope/</link><pubDate>Sun, 10 Dec 2023 00:00:00 +0000</pubDate><guid>/posts/public/rust/ownership-scope/</guid><description>&lt;h3 id="变量的作用域">变量的作用域&lt;/h3>
+&lt;p>作用域是一个项在程序中有效的范围。&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-rust" data-lang="rust">&lt;span style="display:flex;">&lt;span>{ &lt;span style="color:#75715e">// s 在这里无效，它尚未声明
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>	&lt;span style="color:#66d9ef">let&lt;/span> s &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;hello&amp;#34;&lt;/span>; &lt;span style="color:#75715e">// 从此处起，s 是有效的
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#f92672">..&lt;/span>.
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>} &lt;span style="color:#75715e">// 此作用域已结束，s 不再有效
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>变量 &lt;code>s&lt;/code> 绑定到了一个字符串字面值，这个字符串值是硬编码进程序代码中的。&lt;/p>
+&lt;p>这里有两个重要的时间点：&lt;/p>
+&lt;ul>
+&lt;li>当 &lt;code>s&lt;/code> &lt;strong>进入作用域&lt;/strong> 时，它就是有效的。&lt;/li>
+&lt;li>这一直持续到它 &lt;strong>离开作用域&lt;/strong> 为止。&lt;/li>
+&lt;/ul>
+&lt;h3 id="引用的作用域">引用的作用域&lt;/h3>
+&lt;p>引用的作用域是从声明的地方开始一直持续到最后一次使用为止&lt;/p></description></item><item><title>Rust Ownership</title><link>/posts/public/rust/ownership/</link><pubDate>Sat, 09 Dec 2023 00:00:00 +0000</pubDate><guid>/posts/public/rust/ownership/</guid><description>&lt;h3 id="所有权">所有权&lt;/h3>
+&lt;blockquote>
+&lt;ul>
+&lt;li>每一个值都有一个&lt;strong>所有者&lt;/strong>&lt;/li>
+&lt;li>At any given time, you can have &lt;em>either&lt;/em> (but not both) one mutable reference or any number of immutable references.&lt;/li>
+&lt;li>References must always be valid.&lt;/li>
+&lt;li>将值赋给另一个变量（包含函数实参）时移动它&lt;/li>
+&lt;li>当持有堆中数据值的变量离开作用域时，其值将通过 &lt;code>drop&lt;/code> 被清理掉，除非数据被移动为另一个变量所有&lt;/li>
+&lt;/ul>
+&lt;/blockquote>
+&lt;h4 id="所有权与函数">所有权与函数&lt;/h4>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-rust" data-lang="rust">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">fn&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>() {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">let&lt;/span> s &lt;span style="color:#f92672">=&lt;/span> String::from(&lt;span style="color:#e6db74">&amp;#34;hello&amp;#34;&lt;/span>); &lt;span style="color:#75715e">// s 进入作用域
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> takes_ownership(s); &lt;span style="color:#75715e">// s 的值移动到函数里 ...
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#75715e">// ... 所以到这里不再有效
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">let&lt;/span> x &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">5&lt;/span>; &lt;span style="color:#75715e">// x 进入作用域
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> makes_copy(x); &lt;span style="color:#75715e">// x 应该移动函数里，
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#75715e">// 但 i32 是 Copy 的，
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#75715e">// 所以在后面可继续使用 x
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>} &lt;span style="color:#75715e">// 这里，x 先移出了作用域，然后是 s。但因为 s 的值已被移走，所以不会发生改变
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">fn&lt;/span> &lt;span style="color:#a6e22e">takes_ownership&lt;/span>(some_string: String) { &lt;span style="color:#75715e">// some_string 进入作用域
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> println!(&lt;span style="color:#e6db74">&amp;#34;&lt;/span>&lt;span style="color:#e6db74">{}&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>, some_string);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>} &lt;span style="color:#75715e">// 这里，some_string 移出作用域并调用 `drop` 方法。
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#75715e">// 占用的内存被释放
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">fn&lt;/span> &lt;span style="color:#a6e22e">makes_copy&lt;/span>(some_integer: &lt;span style="color:#66d9ef">i32&lt;/span>) { &lt;span style="color:#75715e">// some_integer 进入作用域
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> println!(&lt;span style="color:#e6db74">&amp;#34;&lt;/span>&lt;span style="color:#e6db74">{}&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>, some_integer);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>} &lt;span style="color:#75715e">// some_integer 移出作用域
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="返回值与作用域">返回值与作用域&lt;/h3>
+&lt;p>返回值也可以转移所有权。&lt;/p></description></item></channel></rss>

@@ -1,3 +1,20 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Ethereum on Paper</title><link>/tags/ethereum/</link><description>Recent content in Ethereum on Paper</description><generator>Hugo</generator><language>zh-cn</language><lastBuildDate>Mon, 01 Apr 2024 00:00:00 +0000</lastBuildDate><atom:link href="/tags/ethereum/index.xml" rel="self" type="application/rss+xml"/><item><title>Ethereum Account</title><link>/posts/public/crypto/ethereum-account/</link><pubDate>Mon, 01 Apr 2024 00:00:00 +0000</pubDate><guid>/posts/public/crypto/ethereum-account/</guid><description>Ethereum Account ACCOUNT TYPES Externally-owned account (EOA) – controlled by anyone with the private keys Contract account – a smart contract deployed to the network, controlled by code. Both account types have the ability to:
-Receive, hold and send ETH and tokens Interact with deployed smart contracts Key differences Externally-owned
-Creating an account costs nothing Can initiate transactions Transactions between externally-owned accounts can only be ETH/token transfers Made up of a cryptographic pair of keys: public and private keys that control account activities Contract</description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Ethereum on Paper</title><link>/tags/ethereum/</link><description>Recent content in Ethereum on Paper</description><generator>Hugo</generator><language>zh-cn</language><lastBuildDate>Mon, 01 Apr 2024 00:00:00 +0000</lastBuildDate><atom:link href="/tags/ethereum/index.xml" rel="self" type="application/rss+xml"/><item><title>Ethereum Account</title><link>/posts/public/crypto/ethereum-account/</link><pubDate>Mon, 01 Apr 2024 00:00:00 +0000</pubDate><guid>/posts/public/crypto/ethereum-account/</guid><description>&lt;h1 id="ethereum-account">Ethereum Account&lt;/h1>
+&lt;h2 id="account-types">ACCOUNT TYPES&lt;/h2>
+&lt;ul>
+&lt;li>&lt;strong>Externally-owned account (EOA)&lt;/strong> – controlled by anyone with the private keys&lt;/li>
+&lt;li>&lt;strong>Contract account&lt;/strong> – a smart contract deployed to the network, controlled by code.&lt;/li>
+&lt;/ul>
+&lt;p>Both account types have the ability to:&lt;/p>
+&lt;ul>
+&lt;li>Receive, hold and send ETH and tokens&lt;/li>
+&lt;li>Interact with deployed smart contracts&lt;/li>
+&lt;/ul>
+&lt;h3 id="key-differences">Key differences&lt;/h3>
+&lt;p>&lt;strong>Externally-owned&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>Creating an account costs nothing&lt;/li>
+&lt;li>Can initiate transactions&lt;/li>
+&lt;li>Transactions between externally-owned accounts can only be ETH/token transfers&lt;/li>
+&lt;li>Made up of a cryptographic pair of keys: public and private keys that control account activities&lt;/li>
+&lt;/ul>
+&lt;p>&lt;strong>Contract&lt;/strong>&lt;/p></description></item></channel></rss>
