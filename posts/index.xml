@@ -28,48 +28,48 @@
 &lt;table>
  &lt;thead>
  &lt;tr>
- &lt;th style="text-align: left">共识机制&lt;/th>
- &lt;th style="text-align: left">工作量证明（PoW）&lt;/th>
- &lt;th style="text-align: left">权益证明（PoS）&lt;/th>
- &lt;th style="text-align: left">代理权益证明（DPoS）&lt;/th>
+ &lt;th>共识机制&lt;/th>
+ &lt;th>工作量证明（PoW）&lt;/th>
+ &lt;th>权益证明（PoS）&lt;/th>
+ &lt;th>代理权益证明（DPoS）&lt;/th>
  &lt;/tr>
  &lt;/thead>
  &lt;tbody>
  &lt;tr>
- &lt;td style="text-align: left">挖矿简介&lt;/td>
- &lt;td style="text-align: left">算力挖矿，越快解出数学题的矿工产生出新的交易区块并获得相对应的报酬&lt;/td>
- &lt;td style="text-align: left">持币挖矿，拥有币龄越高的使用者越有机会产生新的区块并获得报酬&lt;/td>
- &lt;td style="text-align: left">投票挖矿，由持有加密货币的使用者进行投票产生见证人，由见证人负责验证交易和产生新的区块&lt;/td>
+ &lt;td>挖矿简介&lt;/td>
+ &lt;td>算力挖矿，越快解出数学题的矿工产生出新的交易区块并获得相对应的报酬&lt;/td>
+ &lt;td>持币挖矿，拥有币龄越高的使用者越有机会产生新的区块并获得报酬&lt;/td>
+ &lt;td>投票挖矿，由持有加密货币的使用者进行投票产生见证人，由见证人负责验证交易和产生新的区块&lt;/td>
  &lt;/tr>
  &lt;tr>
- &lt;td style="text-align: left">能源消耗&lt;/td>
- &lt;td style="text-align: left">极高&lt;/td>
- &lt;td style="text-align: left">低&lt;/td>
- &lt;td style="text-align: left">低&lt;/td>
+ &lt;td>能源消耗&lt;/td>
+ &lt;td>极高&lt;/td>
+ &lt;td>低&lt;/td>
+ &lt;td>低&lt;/td>
  &lt;/tr>
  &lt;tr>
- &lt;td style="text-align: left">硬件设备&lt;/td>
- &lt;td style="text-align: left">需要&lt;/td>
- &lt;td style="text-align: left">不需要&lt;/td>
- &lt;td style="text-align: left">不需要&lt;/td>
+ &lt;td>硬件设备&lt;/td>
+ &lt;td>需要&lt;/td>
+ &lt;td>不需要&lt;/td>
+ &lt;td>不需要&lt;/td>
  &lt;/tr>
  &lt;tr>
- &lt;td style="text-align: left">优点&lt;/td>
- &lt;td style="text-align: left">1. 去中心化程度高，任何人都可以自由进出节点 &lt;!-- raw HTML omitted -->2. 安全性高，破坏系统需要消耗大量成本&lt;/td>
- &lt;td style="text-align: left">1. 挖矿不需要建造昂贵的设备 &lt;!-- raw HTML omitted -->2. 降低 51% 算力攻击几率&lt;/td>
- &lt;td style="text-align: left">1. 挖矿不需要建造昂贵的设备 &lt;!-- raw HTML omitted -->2. 网络运行成本最低 &lt;!-- raw HTML omitted -->3. 节点少资源占用少，因此交易速度更快（1~10秒产生一个新区块）&lt;/td>
+ &lt;td>优点&lt;/td>
+ &lt;td>1. 去中心化程度高，任何人都可以自由进出节点 &lt;!-- raw HTML omitted -->2. 安全性高，破坏系统需要消耗大量成本&lt;/td>
+ &lt;td>1. 挖矿不需要建造昂贵的设备 &lt;!-- raw HTML omitted -->2. 降低 51% 算力攻击几率&lt;/td>
+ &lt;td>1. 挖矿不需要建造昂贵的设备 &lt;!-- raw HTML omitted -->2. 网络运行成本最低 &lt;!-- raw HTML omitted -->3. 节点少资源占用少，因此交易速度更快（1~10秒产生一个新区块）&lt;/td>
  &lt;/tr>
  &lt;tr>
- &lt;td style="text-align: left">缺点&lt;/td>
- &lt;td style="text-align: left">1. 参与挖矿需要建造昂贵的设备，可能导致挖矿集中化 &lt;!-- raw HTML omitted -->2. 挖矿过程能源损耗高 &lt;!-- raw HTML omitted -->3. 可能遭受 51% 算力攻击&lt;/td>
- &lt;td style="text-align: left">1. 流动性差（屯币者及富者越富的风险） &lt;!-- raw HTML omitted -->2. 存在权益粉碎攻击&lt;/td>
- &lt;td style="text-align: left">1. 可能遭受 51% 算力攻击 &lt;!-- raw HTML omitted -->2. 违反中心化理念，权力集中 &lt;!-- raw HTML omitted -->3. 投票意愿低 &lt;!-- raw HTML omitted -->4. 富者囤积货币取得运营主导权&lt;/td>
+ &lt;td>缺点&lt;/td>
+ &lt;td>1. 参与挖矿需要建造昂贵的设备，可能导致挖矿集中化 &lt;!-- raw HTML omitted -->2. 挖矿过程能源损耗高 &lt;!-- raw HTML omitted -->3. 可能遭受 51% 算力攻击&lt;/td>
+ &lt;td>1. 流动性差（屯币者及富者越富的风险） &lt;!-- raw HTML omitted -->2. 存在权益粉碎攻击&lt;/td>
+ &lt;td>1. 可能遭受 51% 算力攻击 &lt;!-- raw HTML omitted -->2. 违反中心化理念，权力集中 &lt;!-- raw HTML omitted -->3. 投票意愿低 &lt;!-- raw HTML omitted -->4. 富者囤积货币取得运营主导权&lt;/td>
  &lt;/tr>
  &lt;tr>
- &lt;td style="text-align: left">应用实例&lt;/td>
- &lt;td style="text-align: left">比特币、以太坊 1.0&lt;/td>
- &lt;td style="text-align: left">以太坊 2.0&lt;/td>
- &lt;td style="text-align: left">EOS&lt;/td>
+ &lt;td>应用实例&lt;/td>
+ &lt;td>比特币、以太坊 1.0&lt;/td>
+ &lt;td>以太坊 2.0&lt;/td>
+ &lt;td>EOS&lt;/td>
  &lt;/tr>
  &lt;/tbody>
 &lt;/table>
